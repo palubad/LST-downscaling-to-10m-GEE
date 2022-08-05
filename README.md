@@ -1,8 +1,8 @@
 # Landsat-8 Land Surface Temperature downscaling using Sentinel-2 in Google Earth Engine
 This code repository is an attachment for the article in Remote Sensing: Onačillová, K., Gallay, M., Paluba, D., Péliová, A., Tokarčík, O., Laubertová, D. 2022: Combining Landsat 8 and Sentinel 2 data in Google Earth Engine to derive higher resolution land surface temperature maps in urban environment. Remote Sensing. The repository contains a folder "javascript_codes" where you can find:
-  - A JavaScript Google Earth Engine (GEE) code "LST_downscaling_GEE_APP.js" used in the [LST-downscaling GEE Application](https://danielp.users.earthengine.app/view/l8lstto10mlst) to downscale (sharpen) the Land Surface Temperature (LST) derived from Landsat 8 thermal sensing using the spectral bands of Sentinel-2 
+  - A JavaScript Google Earth Engine (GEE) code "LST_downscaling_GEE_APP.js" used in the [LST-downscaling GEE Application](https://danielp.users.earthengine.app/view/lst-downscaling) to downscale (sharpen) the Land Surface Temperature (LST) derived from Landsat 8 thermal sensing using the spectral bands of Sentinel-2 
   
-   ## How to use the [LST-downscaling GEE Application](https://danielp.users.earthengine.app/view/l8lstto10mlst)
+   ## How to use the [LST-downscaling GEE Application](https://danielp.users.earthengine.app/view/lst-downscaling)
 1. Define the 5 input parameters: 
     - start and end date (to select the desired time frame), 
     - Landsat collection (to select whether to use the Landsat 8 or Landsat 9 image collection), 
