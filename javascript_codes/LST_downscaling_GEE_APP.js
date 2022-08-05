@@ -1,5 +1,5 @@
 /*
-Authors: Onačillová, K., Gallay, M., Péliová, A., Paluba, D., Tokarčík, O., Laubertová, D. 
+Authors: Onačillová, K., Gallay, M., Paluba, D., Péliová, A., Tokarčík, O., Laubertová, D. 
 (For more info contact: katarina.onacillova@upjs.sk)
 
 This code is free and open. 
