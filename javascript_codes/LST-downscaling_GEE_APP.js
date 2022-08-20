@@ -139,7 +139,7 @@ var appUseText3 = ui.Label(' or in the ',
   {fontWeight: 'italic', fontSize: '14px', margin:'0px 0px 0px 3px'});
 var appUseLink2 = ui.Label(' article',
   {fontWeight: 'italic', fontSize: '14px', margin:'0px 0px 0px 3px',color:'blue'})
-  .setUrl('https://www.mdpi.com/journal/remotesensing');
+  .setUrl('https://www.mdpi.com/2072-4292/14/16/4076/htm');
 var appUseText4 = ui.Label('.',
   {fontWeight: 'italic', fontSize: '14px', margin:'0px 0px 0px 0px'});
 
