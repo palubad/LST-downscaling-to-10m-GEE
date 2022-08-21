@@ -216,7 +216,7 @@ if ((Landsat_collection.size().getInfo() > 0) && (S2_collection.size().getInfo()
     var S2List = S2_collection.toList(S2_collection.size())
     var S2ImagesText = "";
     
-    for (var i=0; i<Landsat_collection.size().getInfo();i++) {
+    for (var i=0; i<S2_collection.size().getInfo();i++) {
       S2ImagesText = ee.String(S2ImagesText).cat(ee.Image(S2List.get(i)).id()).cat('; ')
     }
     
