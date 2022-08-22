@@ -53,14 +53,21 @@ var header2 = ui.Label('How to cite:', {fontSize: '16px', fontWeight: 'bold', ma
 
 // App summary2
 var text2 = ui.Label(
-  'Onačillová, K., Gallay, M., Paluba, D., Péliová, A., Tokarčík, O., Laubertová, D. 2022: Combining Landsat 8 and Sentinel 2 data in Google Earth Engine to derive higher resolution land surface temperature maps in urban environment Remote Sensing. DOI: ',
+  'Onačillová, K.; Gallay, M.; Paluba, D.; Péliová, A.; Tokarčík, O.; Laubertová, D. Combining Landsat 8 and Sentinel-2 Data in Google Earth Engine to Derive Higher Resolution Land Surface Temperature Maps in Urban Environment. Remote Sens. 2022, 14, 4076.',
     {fontSize: '15px', margin:'5px 0px 0px 8px'});
+
+var textLink = ui.Label(' https://doi.org/10.3390/rs14164076',
+  {fontSize: '15px', margin:'0px 0px 0px 8px'})
+  .setUrl('https://doi.org/10.3390/rs14164076');
 
 // Create a panel to hold text
 var panel = ui.Panel({
-  widgets:[header, text, header2, text2],//Adds header and text
+  widgets:[header, text, header2],//Adds header and text
   style:{width: '400px',position:'middle-right'}});
-  
+
+panel.add(text2)
+panel.add(textLink)  
+
 // Create variable for additional text and separators
 
 // This creates another panel to house a line separator and instructions for the user
