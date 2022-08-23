@@ -57,7 +57,7 @@ var text2 = ui.Label(
     {fontSize: '15px', margin:'5px 0px 0px 8px'});
 
 var textLink = ui.Label(' https://doi.org/10.3390/rs14164076',
-  {fontSize: '15px', margin:'0px 0px 0px 8px'})
+  {fontSize: '15px', margin:'0px 0px 0px 8px',color:'blue'})
   .setUrl('https://doi.org/10.3390/rs14164076');
 
 // Create a panel to hold text
