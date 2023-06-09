@@ -22,6 +22,9 @@ This code repository is an attachment for the article in Remote Sensing: Onačil
     - Tthe following 5 images: Landsat 8/9 and Sentinel-2 natural color images (RGB), original Landsat 8/9 LST in 30 m, downscaled LST to 10 m spatial resolution with and without assuming residuals are added to the Map.
 5. (Optional) Click on **"Generate charts of spectral indices vs Landsat LST"** to generate scatterplots of correlation between Landsat 8/9 NDVI, NDWI and NDBI spectral indices and Landsat 8/9 LST bands.
 
+### Final LST product download option
+To download the downscaled LST images use the [GEE Code Editor version](https://code.earthengine.google.com/005680c8acf54715c9b10e946400d842) or directly the code provided in the "LST_downscaling_GEE_APP.js" code in the "javascript_codes" folder.
+
 ## Outputs of the algorithm
 There are three different output types of the algorithm: (1) the main output is the downscaled LST 10 m with residuals, (2) bivariate scatter plots of LSTL8 vs. NDVIL8, NDBIL8, NDWIL8, (3) downscaling regression model. In the GEE code, the user will obtain the following outputs:
   - LST 10 m with residuals - final downscaled LST with regression residuals in 10 m spatial resolution
