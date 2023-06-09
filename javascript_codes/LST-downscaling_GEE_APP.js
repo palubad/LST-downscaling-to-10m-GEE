@@ -59,11 +59,11 @@ var text2 = ui.Label(
 var textLink = ui.Label(' https://doi.org/10.3390/rs14164076',
   {fontSize: '15px', margin:'0px 0px 0px 8px',color:'blue'})
   .setUrl('https://doi.org/10.3390/rs14164076');
-
+  
 // Create a panel to hold text
 var panel = ui.Panel({
   widgets:[header, text, header2],//Adds header and text
-  style:{width: '400px',position:'middle-right'}});
+  style:{width: '500px',position:'middle-right', margin: '10px'}});
 
 panel.add(text2)
 panel.add(textLink)  
@@ -177,7 +177,16 @@ var ROI = /* color: #98ff00 */ee.Geometry.Polygon(
 map.centerObject(ROI,12);
 map.drawingTools().addLayer([ROI], 'ROI', 'green')
 
+// Create a panel to hold the the next part.
+var panel2 = ui.Panel();
+panel2.style().set({
+  width: '500px',
+  position: 'bottom-right'
+});
+panel.add(panel2);
+
 function generateImsButton () {
+  panel2.clear();
 var selected_geometry = map.drawingTools().layers().get(0).toGeometry();
 // var selected_geometry = ROI;
 
@@ -217,7 +226,7 @@ if ((Landsat_collection.size().getInfo() > 0) && (S2_collection.size().getInfo()
       })
     var available_images = ui.Label({
         value: landsatImagesText.getInfo(),
-        style: {margin: '0 0 0 10px',fontSize: '12px',color: 'gray'}
+        style: {margin: '0 0 0 10px',fontSize: '11px',color: 'gray'}
       })
     
     var S2List = S2_collection.toList(S2_collection.size())
@@ -233,15 +242,13 @@ if ((Landsat_collection.size().getInfo() > 0) && (S2_collection.size().getInfo()
       })
     var available_images_S2 = ui.Label({
         value: S2ImagesText.getInfo(),
-        style: {margin: '0 0 0 10px',fontSize: '12px',color: 'gray'}
+        style: {margin: '0 0 0 10px',fontSize: '11px',color: 'gray'}
       })
     
-    panel.add(available_imagesLabel)
+    panel2.add(available_imagesLabel)
           .add(available_images)
           .add(available_imagesLabel_S2)
           .add(available_images_S2)
-  
-  
   
   var IDLabels = ui.Label({
       value:'Enter the selected image IDs',
@@ -264,54 +271,72 @@ if ((Landsat_collection.size().getInfo() > 0) && (S2_collection.size().getInfo()
   var S2ID = ui.Textbox({placeholder: 'End Date',  value: '20180823T094029_20180823T094320_T34UEU',
     style: {width: '350px'}});
   
-  panel.add(IDLabels)
+  panel2.add(IDLabels)
     .add(LandsatLabel)
     .add(LandsatID)
     .add(S2Label)
     .add(S2ID)
 
+
+  var otherPartsButton = ui.Button('Generate Downscaled LST', GenerateOtherParts);
+  
+  panel2.add(otherPartsButton);
+  
+  // Create a panel to hold the the next part.
+  var panel3 = ui.Panel();
+  panel3.style().set({
+    width: '500px',
+    position: 'bottom-right'
+  });
+  panel2.add(panel3);
+  
+
   function GenerateOtherParts () {
-  map.drawingTools().layers().get(0).setShown(false)
-  var selected_geometry = map.drawingTools().layers().get(0).toGeometry();
+    // reset the map
+    panel3.clear();
+    map.layers().reset();
+    
+    map.drawingTools().layers().get(0).setShown(false)
+    var selected_geometry = map.drawingTools().layers().get(0).toGeometry();
   // var selected_geometry = ROI;
   
-  var sentinel_dataset_ID = ee.String('COPERNICUS/S2_SR/');
-  
-  // To be filled after the first RUN
-  var S2_selected_dataset = ee.Image(ee.String(ee.String(sentinel_dataset_ID).cat(ee.String(S2ID.getValue()))).getInfo()), //Select one feature (dataset) of the printed S2_collection
-      Landsat_selected_dataset = ee.Image(ee.String(ee.String(collection_id).cat('/').cat(ee.String(LandsatID.getValue()))).getInfo()); //Select one feature (dataset) of the printed Landsat_collection
-  
-  var S2_date = S2_selected_dataset.get('system:time_start');
-  var S2_StartDate = ee.Date(S2_date).format('YYYY-MM-dd');
-  var S2_EndDate = ee.Date(ee.Number.parse(S2_date).add(86400000)).format('YYYY-MM-dd');
-  
-  var L_date = Landsat_selected_dataset.get('system:time_start');
-  var L_StartDate = ee.Date(L_date).format('YYYY-MM-dd');
-  var L_EndDate = ee.Date(ee.Number.parse(L_date).add(86400000)).format('YYYY-MM-dd');
-  
-  //Select Landsat 8 Surface Reflectance dataset coverage 
-  var selected_Landsat_collection = ee.ImageCollection(collection_id)      //Select the ImageCollection
-                      .filterBounds(selected_geometry)                         //Filter the ImageCollection by your study area
-                      .filterDate(L_StartDate, L_EndDate)            //Filter the ImageCollection by the date interval
-                      .filterMetadata("CLOUD_COVER", "less_than", ee.Number(cloudSlider.getValue()))   //Filter the ImageCollection by the % of the cloud cover
-                      .first();
-  
-  Landsat_selected_dataset = selected_Landsat_collection
-  
-  //Select Sentinel-2 Level-2A collection dataset coverage 
-  var selected_S2_collection = ee.ImageCollection("COPERNICUS/S2_SR")
-                  .filterBounds(selected_geometry)
-                  .filterDate(S2_StartDate, S2_EndDate)
-                  .filterMetadata("CLOUDY_PIXEL_PERCENTAGE", "less_than", ee.Number(cloudSlider.getValue()))
-                  .median();
-  
-  // Apply Scaling factors to Landsat 8/9 Collection 2 images
-  function applyScaleFactors(image) {
-    var opticalBands = image.select('SR_B.').multiply(0.0000275).add(-0.2).multiply(10000);
-    var thermalBands = image.select('ST_B.*').multiply(0.00341802).add(149.0).subtract(273.15);
-    return image.addBands(opticalBands, null, true)
-                .addBands(thermalBands, null, true);
-  }
+    var sentinel_dataset_ID = ee.String('COPERNICUS/S2_SR/');
+    
+    // To be filled after the first RUN
+    var S2_selected_dataset = ee.Image(ee.String(ee.String(sentinel_dataset_ID).cat(ee.String(S2ID.getValue()))).getInfo()), //Select one feature (dataset) of the printed S2_collection
+        Landsat_selected_dataset = ee.Image(ee.String(ee.String(collection_id).cat('/').cat(ee.String(LandsatID.getValue()))).getInfo()); //Select one feature (dataset) of the printed Landsat_collection
+    
+    var S2_date = S2_selected_dataset.get('system:time_start');
+    var S2_StartDate = ee.Date(S2_date).format('YYYY-MM-dd');
+    var S2_EndDate = ee.Date(ee.Number.parse(S2_date).add(86400000)).format('YYYY-MM-dd');
+    
+    var L_date = Landsat_selected_dataset.get('system:time_start');
+    var L_StartDate = ee.Date(L_date).format('YYYY-MM-dd');
+    var L_EndDate = ee.Date(ee.Number.parse(L_date).add(86400000)).format('YYYY-MM-dd');
+    
+    //Select Landsat 8 Surface Reflectance dataset coverage 
+    var selected_Landsat_collection = ee.ImageCollection(collection_id)      //Select the ImageCollection
+                        .filterBounds(selected_geometry)                         //Filter the ImageCollection by your study area
+                        .filterDate(L_StartDate, L_EndDate)            //Filter the ImageCollection by the date interval
+                        .filterMetadata("CLOUD_COVER", "less_than", ee.Number(cloudSlider.getValue()))   //Filter the ImageCollection by the % of the cloud cover
+                        .first();
+    
+    Landsat_selected_dataset = selected_Landsat_collection
+    
+    //Select Sentinel-2 Level-2A collection dataset coverage 
+    var selected_S2_collection = ee.ImageCollection("COPERNICUS/S2_SR")
+                    .filterBounds(selected_geometry)
+                    .filterDate(S2_StartDate, S2_EndDate)
+                    .filterMetadata("CLOUDY_PIXEL_PERCENTAGE", "less_than", ee.Number(cloudSlider.getValue()))
+                    .median();
+    
+    // Apply Scaling factors to Landsat 8/9 Collection 2 images
+    function applyScaleFactors(image) {
+      var opticalBands = image.select('SR_B.').multiply(0.0000275).add(-0.2).multiply(10000);
+      var thermalBands = image.select('ST_B.*').multiply(0.00341802).add(149.0).subtract(273.15);
+      return image.addBands(opticalBands, null, true)
+                  .addBands(thermalBands, null, true);
+    }
   
   // Landsat_collection = Landsat_collection.map(applyScaleFactors);
   Landsat_selected_dataset = applyScaleFactors(Landsat_selected_dataset);
@@ -470,62 +495,7 @@ if ((Landsat_collection.size().getInfo() > 0) && (S2_collection.size().getInfo()
   var NDBI_points = getValues.aggregate_array('ndbi');
   
     
-  var chartNDVI = ui.Chart.array.values(LST_points, 0, NDVI_points)
-  .setOptions({
-    title: 'Correlation LST - NDVI  based on Landsat 8/9 image',
-    legend: true,
-    hAxis: {title: 'NDVI'},
-    vAxis: {title: 'LST (°C)'},
-    series: {
-        0: {pointSize: 1, color: 'blue',visibleInLegend: false}, // observations
-      },
-    trendlines: {
-        0: {
-            type: 'linear',
-            color: 'CC0000',
-            showR2: true,
-            visibleInLegend: true
-        }
-    }
-  });
-  
-  var chartNDWI = ui.Chart.array.values(LST_points, 0, NDWI_points)
-  .setOptions({
-    title: 'Correlation LST - NDWI  based on Landsat 8/9 image',
-    legend: true,
-    hAxis: {title: 'NDWI'},
-    vAxis: {title: 'LST (°C)'},
-    series: {
-        0: {pointSize: 1, color: 'blue',visibleInLegend: false}, // observations
-      },
-    trendlines: {
-        0: {
-            type: 'linear',
-            color: 'CC0000',
-            showR2: true,
-            visibleInLegend: true
-        }
-    }
-  });
-  
-    var chartNDBI = ui.Chart.array.values(LST_points, 0, NDBI_points)
-  .setOptions({
-    title: 'Correlation LST - NDBI  based on Landsat 8/9 image',
-    legend: true,
-    hAxis: {title: 'NDBI'},
-    vAxis: {title: 'LST (°C)'},
-    series: {
-        0: {pointSize: 1, color: 'blue',visibleInLegend: false}, // observations
-      },
-    trendlines: {
-        0: {
-            type: 'linear',
-            color: 'CC0000',
-            showR2: true,
-            visibleInLegend: true
-        }
-    }
-  });
+
 
   // ##########################################################################
   // Regression Calculation 
@@ -670,7 +640,7 @@ if ((Landsat_collection.size().getInfo() > 0) && (S2_collection.size().getInfo()
   var L8_LST_10_noResiduals = ui.Map.Layer(downscaled_LST_10m2, lstParams2, 'S2-LST 10m (no residuals)', false);
   var L8_LST_10_with_Residuals = ui.Map.Layer(S2_LST_10_w_Residuals, lstParams2, "S2-LST 10m with residuals", true);
   
-  
+
   // Add layers to the map
   map.add(L8_image_viz);
   map.add(S2_image_viz);
@@ -752,7 +722,9 @@ if ((Landsat_collection.size().getInfo() > 0) && (S2_collection.size().getInfo()
       params: {bbox:'0,0,100,8', dimensions:'256x20'},  
       style: {position: 'bottom-center'}
     });
-    var panel2 = ui.Panel({
+    
+    
+    var panel4 = ui.Panel({
       widgets: [
         ui.Label(ee.Number(min_legend).round().getInfo()), 
         ui.Label({style: {stretch: 'horizontal'}}), 
@@ -762,19 +734,14 @@ if ((Landsat_collection.size().getInfo() > 0) && (S2_collection.size().getInfo()
       style: {stretch: 'horizontal', maxWidth: '270px', padding: '0px 0px 0px 0px',
       margin: '0 0 0 0'}
     });
-    return ui.Panel().add(panel2).add(thumb);
+    return ui.Panel().add(panel4).add(thumb);
   }
   
   var ChartButton = ui.Button('Generate charts of spectral indices vs Landsat 8/9 LST', GenerateCharts);
   
-  function GenerateCharts() {
-    panel.add(chartNDVI)
-        .add(chartNDWI)
-        .add(chartNDBI)
-  } 
   
   // Add widgets to the panel in an order
-  panel.add(selectLayerLabel)
+  panel3.add(selectLayerLabel)
         .add(additionalCheck6)
         .add(additionalCheck5)
         .add(additionalCheck3)
@@ -786,6 +753,77 @@ if ((Landsat_collection.size().getInfo() > 0) && (S2_collection.size().getInfo()
         .add(makeLegend(lstParams2))
         .add(ChartButton)
   
+    // Create a panel to hold the the next part.
+  var panel5 = ui.Panel();
+  panel5.style().set({
+    width: '500px',
+    position: 'bottom-right'
+  });
+  panel3.add(panel5);
+  
+  
+  function GenerateCharts() {
+    panel5.clear();
+    var chartNDVI = ui.Chart.array.values(LST_points, 0, NDVI_points)
+    .setOptions({
+      title: 'Correlation LST - NDVI  based on Landsat 8/9 image',
+      legend: true,
+      hAxis: {title: 'NDVI'},
+      vAxis: {title: 'LST (°C)'},
+      series: {
+          0: {pointSize: 1, color: 'blue',visibleInLegend: false}, // observations
+        },
+      trendlines: {
+          0: {
+              type: 'linear',
+              color: 'CC0000',
+              showR2: true,
+              visibleInLegend: true
+          }
+      }
+    });
+    
+    var chartNDWI = ui.Chart.array.values(LST_points, 0, NDWI_points)
+    .setOptions({
+      title: 'Correlation LST - NDWI  based on Landsat 8/9 image',
+      legend: true,
+      hAxis: {title: 'NDWI'},
+      vAxis: {title: 'LST (°C)'},
+      series: {
+          0: {pointSize: 1, color: 'blue',visibleInLegend: false}, // observations
+        },
+      trendlines: {
+          0: {
+              type: 'linear',
+              color: 'CC0000',
+              showR2: true,
+              visibleInLegend: true
+          }
+      }
+    });
+    
+      var chartNDBI = ui.Chart.array.values(LST_points, 0, NDBI_points)
+    .setOptions({
+      title: 'Correlation LST - NDBI  based on Landsat 8/9 image',
+      legend: true,
+      hAxis: {title: 'NDBI'},
+      vAxis: {title: 'LST (°C)'},
+      series: {
+          0: {pointSize: 1, color: 'blue',visibleInLegend: false}, // observations
+        },
+      trendlines: {
+          0: {
+              type: 'linear',
+              color: 'CC0000',
+              showR2: true,
+              visibleInLegend: true
+          }
+      }
+    });
+    panel5.add(chartNDVI)
+        .add(chartNDWI)
+        .add(chartNDBI)
+  } 
   
   ///////////////////////////////////////////////////////////////
   //             Add functionality to widgets                  //
@@ -868,15 +906,12 @@ if ((Landsat_collection.size().getInfo() > 0) && (S2_collection.size().getInfo()
     
   }
   
-  var otherPartsButton = ui.Button('Generate Downscaled LST', GenerateOtherParts);
-  
-  panel.add(otherPartsButton);
 }
   else {
     var Error_message = ui.Label({
       value:'There are 0 images either in Sentinel-2 or Landsat 8/9 Image Collections. Please try to change some parameters and generate images again.',
       style: {margin: '0 0 0 10px',fontSize: '14px', color: 'red'}
     })
-    panel.add(Error_message)
+    panel2.add(Error_message)
   }
   }
