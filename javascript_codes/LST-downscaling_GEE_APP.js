@@ -135,10 +135,8 @@ var cloudSlider = ui.Slider({min:0,max:100, style:{width:'200px'}}).setValue(5);
 
 var GenerateImagesButton = ui.Button('Generate Landsat 8/9 and Sentinel-2 Image Collections', generateImsButton);
 
-var appUseText1 = ui.Label('A brief description of how to work with the application can',
+var appUseText1 = ui.Label('A brief description of how to work with the application can found at the',
   {fontWeight: 'italic', fontSize: '14px', margin:'5px 0px 0px 8px'});
-var appUseText2 = ui.Label('be found at the ',
-  {fontWeight: 'italic', fontSize: '14px', margin:'0px 0px 0px 8px'});
 var appUseLink1 = ui.Label(' GitHub repository ',
   {fontWeight: 'italic', fontSize: '14px', margin:'0px 0px 0px 3px',color:'blue'})
   .setUrl('https://github.com/palubad/LST-downscaling-to-10m-GEE#how-to-use-the-lst-downscaling-gee-application');
@@ -150,8 +148,17 @@ var appUseLink2 = ui.Label(' article',
 var appUseText4 = ui.Label('.',
   {fontWeight: 'italic', fontSize: '14px', margin:'0px 0px 0px 0px'});
 
+var appUseText5 = ui.Label('To download the downscaled LST images use the ',
+  {fontWeight: 'italic', fontSize: '14px', margin:'5px 0px 0px 8px'});
+var appUseLink5 = ui.Label(' GEE Code Editor version',
+  {fontWeight: 'italic', fontSize: '14px', margin:'5px 0px 0px 3px',color:'blue'})
+  .setUrl('https://code.earthengine.google.com/005680c8acf54715c9b10e946400d842');
+var appUseText6 = ui.Label('.',
+  {fontWeight: 'italic', fontSize: '14px', margin:'5px 0px 0px 0px'});
+
 panel.add(appUseText1)
-  .add((ui.Panel([appUseText2, appUseLink1, appUseText3, appUseLink2, appUseText4],ui.Panel.Layout.flow('horizontal'),{margin:'0 0 10px 0px'})))
+  .add((ui.Panel([appUseLink1, appUseText3, appUseLink2, appUseText4],ui.Panel.Layout.flow('horizontal'),{margin:'0 0 10px 0px'})))
+  .add((ui.Panel([appUseText5, appUseLink5, appUseText6],ui.Panel.Layout.flow('horizontal'),{margin:'0 0 10px 0px'})))
   .add(dateLabel)
   .add((ui.Panel([startLabel, endLabel],ui.Panel.Layout.flow('horizontal'))))
   .add((ui.Panel([startDate_selected, endDate_selected],ui.Panel.Layout.flow('horizontal'))))
