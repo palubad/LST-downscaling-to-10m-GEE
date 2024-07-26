@@ -1,4 +1,5 @@
 # Landsat-8 Land Surface Temperature downscaling using Sentinel-2 in Google Earth Engine
+A Google Earth Engne tool to downscale Landsat Land Surface Temperature data to 10 m resolution using Sentinel-2 data. 
 This code repository is an attachment for the article in Remote Sensing: Onačillová, K.; Gallay, M.; Paluba, D.; Péliová, A.; Tokarčík, O.; Laubertová, D. Combining Landsat 8 and Sentinel-2 Data in Google Earth Engine to Derive Higher Resolution Land Surface Temperature Maps in Urban Environment. Remote Sens. 2022, 14, 4076. [https://doi.org/10.3390/rs14164076](https://www.mdpi.com/2072-4292/14/16/4076/htm). 
 
 </b> This repository contains a folder "javascript_codes" where you can find:
